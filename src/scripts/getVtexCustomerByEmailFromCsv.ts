@@ -11,16 +11,17 @@ const run = async () => {
 
     for (const customer of csvData) {
         try {
-            const fetchCustomer = await Vtex.getCustomerAndCorporateNameIdByEmail(customer.email);
-            if (fetchCustomer) {
-                console.log(`Customer ID for ${customer.email}: ${fetchCustomer.id}`);
+            const user = await Vtex.getCustomerAndCorporateNameIdByEmail(customer.email);
+            if (user) {
+                console.log(`Customer ID for ${customer.email}: ${user.userId}`);
 
                 csvDataWithId.push({
-                    idDocument: fetchCustomer.id,
+                    idDocument: user.id,
+                    userId: user.userId,
                     email: customer.email,
                     corporateNameExcel: customer.corporateName,
-                    currentCorporateName: fetchCustomer.corporateName,
-                    newCorporatename: fetchCustomer.corporateName.replace(/&/g, 'Y')
+                    currentCorporateName: user.corporateName,
+                    newCorporateName: user.corporateName.replace(/&/g, 'y')
                 });
 
                 console.log(`Customer ready for update ${customer.email} to ${customer.corporateName}`);
@@ -32,7 +33,7 @@ const run = async () => {
 
 
     // Generar un nuevo CSV con los datos actualizados
-    const headers = ['idDocument', 'email', 'corporateNameExcel', 'currentCorporateName', 'newCorporatename'];
+    const headers = ['idDocument', 'userId', 'email', 'corporateNameExcel', 'currentCorporateName', 'newCorporateName'];
     const updatedCsvFilePath = 'src/fileSystem/files/AlviCustomersForUpdateTest.csv';
 
     CSV.generateCSV(csvDataWithId, headers, updatedCsvFilePath);

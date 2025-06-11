@@ -30,7 +30,7 @@ export const Vtex = {
         return response.json();
     },
     getCustomerAndCorporateNameIdByEmail: async (email: string) => {
-        const url = `${Vtex.API_BASE_URL}/dataentities/CL/search?email=${encodeURIComponent(email)}&_fields=id,corporateName`;
+        const url = `${Vtex.API_BASE_URL}/dataentities/CL/search?email=${encodeURIComponent(email)}&_fields=id,userId,corporateName`;
         const response = await fetch(url, {
             method: 'GET',
             headers: headers
@@ -44,12 +44,15 @@ export const Vtex = {
         }
         return data[0];
     },
-    updateCorporateName: async (customerId: string, newCorporateName: string) => {
-        const url = `${Vtex.API_BASE_URL}/dataentities/CL/documents/${customerId}`;
-        const body = JSON.stringify({ corporateName: newCorporateName });
+    updateCorporateName: async (userId: string, newCorporateName: string) => {
+        const url = `${Vtex.API_BASE_URL}/dataentities/CL/documents/`;
+        const body = JSON.stringify({ 
+            userId: userId,
+            corporateName: newCorporateName 
+        });
 
         const response = await fetch(url, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: headers,
             body: body
         });
